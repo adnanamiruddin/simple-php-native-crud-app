@@ -23,6 +23,17 @@ if (isset($_GET['op'])) {
     $op = "";
 }
 
+if ($op == 'delete') {
+    $id = $_GET['id'];
+    $queryDelete = "DELETE FROM mahasiswa WHERE id='$id'";
+    $executeQDelete = mysqli_query($connection, $queryDelete);
+    if ($executeQDelete) {
+        $success = "Berhasil menghapus data";
+    } else {
+        $error = "Gagal menghapus data";
+    }
+}
+
 if ($op == 'edit') {
     $id = $_GET['id'];
     $queryGet = "SELECT * FROM mahasiswa WHERE id='$id'";
@@ -138,7 +149,7 @@ if (isset($_POST['simpan'])) {
                         <div class="col-sm-10">
                             <select class="form-control" id="fakultas" name="fakultas">
                                 <option value="">- Pilih Fakultas -</option>
-                                <option value="Hukum" <?php if ($fakultas == 'Hukum') echo "selected" ?>>Ilmu Sosial</option>
+                                <option value="Ilmu Sosial" <?php if ($fakultas == 'Ilmu Sosial') echo "selected" ?>>Ilmu Sosial</option>
                                 <option value="Teknik" <?php if ($fakultas == 'Teknik') echo "selected" ?>>Teknik</option>
                                 <option value="MIPA" <?php if ($fakultas == 'MIPA') echo "selected" ?>>MIPA</option>
                             </select>
@@ -190,8 +201,11 @@ if (isset($_POST['simpan'])) {
                                 <td scope="row"><?php echo $fakultas ?></td>
                                 <td scope="row">
                                     <a href="index.php?op=edit&id=<?php echo $id ?>">
-                                        <button type="button" class="btn btn-warning">Edit</button></a>
-                                    <button type="button" class="btn btn-danger">Hapus</button>
+                                        <button type="button" class="btn btn-warning">Edit</button>
+                                    </a>
+                                    <a href="index.php?op=delete&id=<?php echo $id ?>" onclick="return confirm('Yakin ingin menghapus data ini?')">
+                                        <button type="button" class="btn btn-danger">Hapus</button>
+                                    </a>
                                 </td>
                             </tr>
                         <?php
