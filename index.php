@@ -117,6 +117,7 @@ if (isset($_POST['simpan'])) {
                         <?php echo $error ?>
                     </div>
                 <?php
+                    header("refresh:3;url=index.php"); // :3 itu maksudnya setelah 5 detik baru di-refresh
                 } ?>
                 <?php if ($success) {
                 ?>
@@ -124,6 +125,7 @@ if (isset($_POST['simpan'])) {
                         <?php echo $success ?>
                     </div>
                 <?php
+                    header("refresh:5;url=index.php"); // :5 itu maksudnya setelah 5 detik baru di-refresh
                 } ?>
                 <form action="" method="post">
                     <div class="mb-3 row">
