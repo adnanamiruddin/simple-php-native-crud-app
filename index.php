@@ -17,7 +17,29 @@ $fakultas = "";
 $success = "";
 $error = "";
 
-// CREATE DATA
+if (isset($_GET['op'])) {
+    $op = $_GET['op'];
+} else {
+    $op = "";
+}
+
+if ($op == 'edit') {
+    $id = $_GET['id'];
+    $queryGet = "SELECT * FROM mahasiswa WHERE id='$id'";
+    $executeQGet = mysqli_query($connection, $queryGet);
+    $data = mysqli_fetch_array($executeQGet);
+
+    if (!$data) {
+        $error = "Data tidak ditemukan";
+    } else {
+        $nim = $data['nim'];
+        $nama = $data['nama'];
+        $alamat = $data['alamat'];
+        $fakultas = $data['fakultas'];
+    }
+}
+
+// Pada saat tombol 'Simpan' di-klik
 if (isset($_POST['simpan'])) {
     $nim = $_POST['nim'];
     $nama = $_POST['nama'];
@@ -25,14 +47,24 @@ if (isset($_POST['simpan'])) {
     $fakultas = $_POST['fakultas'];
 
     if ($nim && $nama && $alamat && $fakultas) {
-        $queryInsert = "INSERT INTO mahasiswa(nim, nama, alamat, fakultas) VALUES ('$nim', '$nama', '$alamat', '$fakultas')";
-        try {
-            $executeQInsert = mysqli_query($connection, $queryInsert);
-            if ($executeQInsert) {
-                $success = "Berhasil menambahkan data";
+        if ($op == 'edit') { // UPDATE DATA
+            $queryUpdate = "UPDATE mahasiswa SET nim='$nim', nama='$nama', alamat='$alamat', fakultas='$fakultas' WHERE id='$id'";
+            $executeQUpdate = mysqli_query($connection, $queryUpdate);
+            if ($executeQUpdate) {
+                $success = "Data berhasil diperbarui";
+            } else {
+                $error = "Data gagal diperbarui";
             }
-        } catch (mysqli_sql_exception $err) {
-            $error = "Gagal menambahkan data. NIM sudah terdaftar!";
+        } else { // CREATE DATA
+            $queryInsert = "INSERT INTO mahasiswa(nim, nama, alamat, fakultas) VALUES ('$nim', '$nama', '$alamat', '$fakultas')";
+            try {
+                $executeQInsert = mysqli_query($connection, $queryInsert);
+                if ($executeQInsert) {
+                    $success = "Berhasil menambahkan data";
+                }
+            } catch (mysqli_sql_exception $err) {
+                $error = "Gagal menambahkan data";
+            }
         }
     } else {
         $error = "Semua data harus diisi!";
@@ -138,6 +170,7 @@ if (isset($_POST['simpan'])) {
                         </tr>
                     </thead>
                     <tbody>
+                        <!-- READ DATA -->
                         <?php
                         $queryGet = "SELECT * FROM mahasiswa ORDER BY id ASC";
                         $executeQGet = mysqli_query($connection, $queryGet);
